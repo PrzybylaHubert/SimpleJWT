@@ -9,7 +9,7 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/api', name: 'app_api_', format: 'json')]
 class LoginController extends AbstractController
 {
-    #[Route('/login', name: 'login')]
+    #[Route('/login', name: 'login', methods: ['POST'])]
     public function index(): JsonResponse
     {
         return $this->json([
