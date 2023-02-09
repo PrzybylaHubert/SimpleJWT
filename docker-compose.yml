@@ -1,5 +1,4 @@
 version: '3.8'
-
 services:
   database:
     image: postgres:15-alpine
@@ -10,4 +9,24 @@ services:
     ports:
       - target: 5432
         published: 5433
+    container_name: PostgreSQL
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
+  webserver:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - target: 80
+        published: 8080
+    container_name: PHP_8.2
+    environment:
+      AUTH_TYPE: jwt
+      DATABASE_URL: postgresql://postgres:postgres@PostgreSQL:5432/ultimate_task?serverVersion=15&charset=utf8
+    depends_on:
+      database:
+        condition: service_healthy
